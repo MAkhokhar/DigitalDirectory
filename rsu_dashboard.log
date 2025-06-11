@@ -1,0 +1,31 @@
+2025-03-20 12:38:52,802 - RSU Dashboard  - INFO - STARTED get_valid_credentials
+2025-03-20 12:38:52,804 - RSU Dashboard  - INFO - COMPLETED get_valid_credentials in 0.00s
+2025-03-20 12:39:54,969 - RSU Dashboard  - INFO - STARTED get_valid_credentials
+2025-03-20 12:39:54,969 - RSU Dashboard  - INFO - COMPLETED get_valid_credentials in 0.00s
+2025-03-20 13:08:18,838 - RSU Dashboard  - INFO - STARTED get_valid_credentials
+2025-03-20 13:08:18,844 - RSU Dashboard  - INFO - COMPLETED get_valid_credentials in 0.01s
+2025-03-21 12:51:33,714 - assets.logingtime  - INFO - STARTED get_valid_credentials
+2025-03-21 12:51:33,763 - assets.logingtime  - INFO - COMPLETED get_valid_credentials in 0.05s
+2025-03-21 12:51:37,944 - dash.dash  - INFO - Dash is running on http://127.0.0.1:8050/
+
+2025-03-21 12:51:39,993 - assets.logingtime  - INFO - STARTED get_valid_credentials
+2025-03-21 12:51:39,996 - assets.logingtime  - INFO - COMPLETED get_valid_credentials in 0.00s
+2025-03-21 12:52:09,179 - assets.logingtime  - INFO - User admin logged in at 2025-03-21 12:52:09
+2025-03-21 12:56:09,855 - assets.logingtime  - INFO - User admin logged in at 2025-03-21 12:56:09
+2025-03-24 14:25:25,588 - assets.logingtime  - INFO - STARTED get_valid_credentials
+2025-03-24 14:25:25,636 - assets.logingtime  - INFO - COMPLETED get_valid_credentials in 0.05s
+2025-03-24 14:25:30,064 - dash.dash  - INFO - Dash is running on http://127.0.0.1:8050/
+
+2025-03-24 14:25:32,095 - assets.logingtime  - INFO - STARTED get_valid_credentials
+2025-03-24 14:25:32,095 - assets.logingtime  - INFO - COMPLETED get_valid_credentials in 0.00s
+2025-03-24 14:26:18,686 - assets.logingtime  - INFO - STARTED get_valid_credentials
+2025-03-24 14:26:18,687 - assets.logingtime  - INFO - COMPLETED get_valid_credentials in 0.00s
+2025-03-24 14:29:09,165 - assets.logingtime  - INFO - STARTED get_valid_credentials
+2025-03-24 14:29:09,165 - assets.logingtime  - INFO - COMPLETED get_valid_credentials in 0.00s
+2025-03-24 14:29:53,774 - assets.logingtime  - INFO - User RSU logged in at 2025-03-24 14:29:53
+2025-03-24 14:49:37,911 - assets.logingtime  - INFO - STARTED get_valid_credentials
+2025-03-24 14:49:37,927 - assets.logingtime  - INFO - COMPLETED get_valid_credentials in 0.02s
+2025-03-24 14:49:39,369 - dash.dash  - INFO - Dash is running on http://127.0.0.1:8050/
+
+2025-03-24 14:49:41,275 - assets.logingtime  - INFO - STARTED get_valid_credentials
+2025-03-24 14:49:41,275 - assets.logingtime  - INFO - COMPLETED get_valid_credentials in 0.00s
