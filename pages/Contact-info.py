@@ -16,6 +16,7 @@ dash.register_page(__name__, name='RSU-PhoneBook', external_stylesheets=[dbc.the
 # df= pd.read_csv('data/rsucontacts.csv')
 df=fetch_contacts()
 total = html.Div(id="total", style={"textAlign": "right"})
+
 #
 #-----------------------------------------------------------------------------
 

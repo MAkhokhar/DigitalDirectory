@@ -6,8 +6,57 @@ import plotly.express as px
 import dash_bootstrap_components as dbc
 from dash import dash_table
 import csv
+# import pandas as pd
+# from data.database import fetch_contacts, insert_contact
+from sqlalchemy import create_engine, MetaData, Table, select, text, insert
 import pandas as pd
-from data.database import fetch_contacts
+import logging
+# Configure logging
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    handlers=[
+        logging.FileHandler('rsu_dashboard.log'),
+        logging.StreamHandler()
+    ]
+)
+logger = logging.getLogger('RSU Dashboard')
+DATABASE_URI = "mysql+pymysql://root:@localhost/phonebook"
+engine = create_engine(DATABASE_URI)
+metadata = MetaData()
+rsucontacts_table = Table('rsucontacts', metadata, autoload_with=engine)
+
+def add_contact_to_rsucontacts(contact_data):
+    """
+    Insert contact data into the rsucontacts table in the MySQL database.
+    
+    Args:
+        contact_data (dict): Dictionary containing contact details with keys:
+            Name, Gender, Designation, Organisation, Department, Group, Email,
+            Cell No, Home phone No, Landline / Fax, CNIC, Postal Address,
+            Union Council, District, Tehsil
+    
+    Returns:
+        bool: True if insertion is successful, False otherwise
+    """
+    try:
+        if not contact_data.get('Name') or not contact_data.get('Gender'):
+            logger.warning("Attempted to insert contact with missing Name or Gender")
+            return False
+        
+        with engine.connect() as conn:
+            conn.execute(
+                insert(rsucontacts_table),
+                contact_data
+            )
+            conn.commit()
+        
+        logger.info(f"Contact added successfully: {contact_data['Name']}")
+        return True
+    
+    except Exception as e:
+        logger.error(f"Failed to add contact: {str(e)}")
+        return False    
 # selected_groups_str = ' '
 df=pd.read_csv('data/contacts.csv')
 
@@ -59,8 +108,19 @@ layout = html.Div([
                             ),
                              dbc.Form(
                                 [
+                                    # dbc.Label('Gender  ',className='text-start',style={'color':'blue','display': 'inline-block', 'width': '150px', 'text-align': 'left', 'vertical-align': 'left'}),
+                                    # dcc.Input(id='gender', type='text',required=False, placeholder='Male or Female',className='text-start')
+                                
                                     dbc.Label('Gender  ',className='text-start',style={'color':'blue','display': 'inline-block', 'width': '150px', 'text-align': 'left', 'vertical-align': 'left'}),
-                                    dcc.Input(id='gender', type='text',required=False, placeholder='Male or Female',className='text-start')
+                                dcc.Dropdown(
+                                    id='gender',
+                                    options=[
+                                        {'label': 'Male', 'value': 'Male'},
+                                        {'label': 'Female', 'value': 'Female'}
+                                    ],
+                                    placeholder='Select Gender',
+                                    # className='form-select mb-3'
+                                ),
                                 ],
                                 className='mb-3'
                             ),
@@ -372,8 +432,32 @@ def submit_form(n_clicks,n_close, selected_checkboxes,first_name , middle_name, 
             except FileNotFoundError:
                     pass
             # Add new entry
-
-            new_entry = {
+       
+        # Combine name parts
+         
+        full_name = f"{first_name} {middle_name} {last_name}".strip()
+        
+        # Prepare data dictionary with exact column names
+        db_data = {
+            'Name': full_name,
+            'Gender': gender,
+            'CNIC': cnic,
+            'Postal Address': address,
+            'Email': email,
+            'Cell No': mobile_no,
+            'Home phone No': home_no,
+            'Designation': designation,
+            'Organisation': types,
+            'Department': department,
+            #'Date-Of-Joining': doj,
+            'Group': group,
+            'Landline / Fax': ptcl,
+            'Union Council': uc,
+            'District': district,
+            'Tehsil': tehsil,
+            
+            }
+        new_entry = {
             'First Name': first_name,
             'Middle Name': middle_name,
             'Last Name': last_name,
@@ -393,21 +477,81 @@ def submit_form(n_clicks,n_close, selected_checkboxes,first_name , middle_name, 
             'District': district,
             'Tehsil': tehsil,
             }
-            existing_data.append(new_entry)
-            with open('data/contacts.csv', 'w', newline='') as csvfile:
+        existing_data.append(new_entry)
+        message = add_contact_to_rsucontacts(db_data)
+        print(message)
+        with open('data/contacts.csv', 'w', newline='') as csvfile:
                   fieldnames = list(new_entry.keys())
                   writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
                   writer.writeheader()
-                  writer.writerows(existing_data)
+                  writer.writerows(existing_data)       
 
 
 
         # Prepare data for DataTable
-
-            columns = [{'name': col, 'id': col} for col in fieldnames]
-            first_name=''
-            middle_name=''
-            model='thanks: For new Entry click on LSU Data Entry Form.'
-            return existing_data, columns, not is_open, model
+       
+        columns = [{'name': col, 'id': col} for col in fieldnames]
+        first_name=''
+        middle_name=''
+        model='thanks: For new Entry click on LSU Data Entry Form.'
+        return existing_data, columns, not is_open, model
 
     return  dash.no_update
+
+# # In your callback function for form submission
+# @callback(
+#     Output('submission-status', 'children'),
+#     Input('submit-button', 'n_clicks'),
+#     [ State('group_checkboxes', 'value'),
+#     State('first_name', 'value'),
+#     State('middle_name', 'value'),
+#     State('last_name', 'value'),
+#     State('gender', 'value'),
+#     State('cnic', 'value'),
+#     State('postal_address', 'value'),
+#     State('email', 'value'),
+#     State('mobile_no', 'value'),
+#     State('home_phone', 'value'),
+#     State('types', 'value'),
+#     State('department', 'value'),
+#     State('designation', 'value'),
+
+#     #State('doj', 'value'),
+#     State('group', 'value'),
+#     State('ptcl', 'value'),
+#     State('uc', 'value'),
+#     State('district', 'value'),
+#     State('tehsil', 'value'),
+#     ]
+# )
+# def handle_submission(n_clicks, first_name, middle_name, last_name, gender, cnic, 
+#                       postal_address, email, cell_no, designation, organisation, 
+#                       department, district, tehsil, union_council):
+#     if not n_clicks:
+#         return ""
+    
+#     # Prepare data dictionary
+#     contact_data = {
+#         'First Name': first_name,
+#         'Middle Name': middle_name,
+#         'Last Name': last_name,
+#         'Gender': gender,
+#         'CNIC': cnic,
+#         'Postal Address': postal_address,
+#         'Email': email,
+#         'Cell No': cell_no,
+#         'Designation': designation,
+#         'Organisation': organisation,
+#         'Department': department,
+#         'District': district,
+#         'Tehsil': tehsil,
+#         'Union Council': union_council
+#     }
+    
+#     # Add to database
+#     success, message = add_contact_to_db(contact_data)
+    
+#     if success:
+#         return dbc.Alert(message, color="success")
+#     else:
+#         return dbc.Alert(message, color="danger")
